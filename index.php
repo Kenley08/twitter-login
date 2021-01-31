@@ -5,6 +5,8 @@
     require_once 'vendor/autoload.php';
     use Abraham\TwitterOAuth\TwitterOAuth;
 
+ 
+
 
 if(isset($_SESSION['twitter_acces_token']) && $_SESSION['twitter_acces_token']){
     //nous avons l'acces token
@@ -24,12 +26,12 @@ if(isset($_SESSION['twitter_acces_token']) && $_SESSION['twitter_acces_token']){
     $_SESSION['oauth_token']=$request_token['oauth_token'];
     $_SESSION['oauth_token_secret']=$request_token['oauth_token_secret'];
 
-
+    $isLoggedIn=false;
 }
 
 
 // on teste si session token existe
-if($_SESSION['oauth_token_secret'] && $_SESSION['oauth_token']){//l'utilisateur est connecte,affichez ses informations
+if($isLoggedIn){//l'utilisateur est connecte,affichez ses informations
     $connection=new TwitterOAuth(CONSUMER_KEY,CONSUMER_SECRET, $_SESSION['twitter_acces_token']['oauth_token'],$_SESSION['twitter_acces_token']['oauth_token_secret']);
     $user=$connection->get("account/verify_credentials",['include_email'=>'true']);
     if(property_exists($user,'error')){
@@ -60,9 +62,8 @@ if($_SESSION['oauth_token_secret'] && $_SESSION['oauth_token']){//l'utilisateur 
         <?php
        
     }
-}else{ //not logged in,display loggin with twitter link
-  
 
+}else{ //not logged in,display loggin with twitter link
    $url=$connection->url('oauth/authorize',array('oauth_token'=>$request_token['oauth_token']));
         // $url = $connection->getAuthorizeURL($request_token['oauth_token']);
     ?>
@@ -70,6 +71,9 @@ if($_SESSION['oauth_token_secret'] && $_SESSION['oauth_token']){//l'utilisateur 
     <?php
 
 }
+
+
+
 
 
 ?>
